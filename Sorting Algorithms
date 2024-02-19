@@ -1,0 +1,69 @@
+#include <iostream>
+
+using namespace std;
+
+//Impleament search algorithm
+struct Node
+{
+    int label;
+    Node* left;
+    Node* right;
+
+    ~Node() {
+      delete left;
+      delete right;
+    }
+};
+
+void insertSearchNode(Node** tree, int x)       //insert integer x into the BST
+{
+    if (*tree) {
+        if (x < (*tree)->label)
+            insertSearchNode(&(*tree)->left, x);
+        else
+            insertSearchNode(&(*tree)->right, x);
+    } else {
+        *tree = new Node;
+        (*tree)->label = x;
+        (*tree)->right = NULL;
+        (*tree)->left = NULL;
+    }
+}
+
+void insertArrayTree(int arr[], int n, Node** tree)     //insert the array integer into the nodes label of BST
+{
+    for (int i = 0; i < n; i++)
+        insertSearchNode(tree, arr[i]);
+}
+
+void insertIntoArray(int arr[], Node** tree, int* i)      //insert into the array the node label touched during an inorder tree traversal
+{
+    if (*tree) {
+        if ((*tree)->left) insertIntoArray(arr, &(*tree)->left, i);
+        arr[(*i)++] = (*tree)->label;
+        if ((*tree)->right) insertIntoArray(arr, &(*tree)->right, i);
+    }
+}
+
+int main()
+{
+    Node* maintree = NULL;
+
+    int num;
+    cin >> num;
+
+    int arr[num];
+
+    for (int i = 0; i < num; i++)    //initialize array with num-elements
+        cin >> arr[i];
+
+    insertArrayTree(arr, num, &maintree);    //insert elements into BST
+    int index = 0;
+    insertIntoArray(arr, &maintree, &index);  //modify array sorting his elements using the BST
+
+    delete maintree;
+
+    for (int y = 0; y < num; y++) 
+        cout << arr[y] << ' ';
+    cout << '\n';
+}
